@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAGE Application</title>
+    <style>
+        :root {
+            --color-gray-drk: #303030;
+            --color-gray-mid: #505050;
+            --color-gray-lit: #707070;
+        }
+
+        body {
+            font-family: sans-serif, monospace;
+            background-color: var(--color-gray-drk);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+
+            margin: 0;
+            padding: 0
+        }
+
+        #sage-canvas {
+            padding: 0;
+            display: block;
+            border: 2px solid var(--color-gray-lit);
+            background-color: #000000;
+
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+    </style>
+</head>
+<body>
+    <!-- wasm module will create and insert the canvas here -->
+
+    <script type="text/javascript">
+        var Module = {
+            preRun: [],
+            postRun: [],
+            print: (text) => { console.log(text); },
+            printErr: (text) => { console.error(text); },
+        };
+
+        window.addEventListener("error", (e) => {
+            console.error("error:", e);
+        });
+
+        window.addEventListener("unhandledrejection", (e) => {
+            console.error("unhandledrejection:", e);
+        });
+    </script>
+
+    {{{ SCRIPT }}}
+</body>
+</html>

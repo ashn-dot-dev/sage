@@ -1,0 +1,42 @@
+#!/bin/sh
+set -e
+
+if [ "$#" -ne 1 ]; then
+    echo "Usage: ${0} [raylib|web]"
+    exit 1
+fi
+
+BACKEND="${1}"
+if [ -z "${SAGE_HOME}" ]; then
+    SAGE_HOME="$(pwd)"
+fi
+
+if [ "${BACKEND}" = 'raylib' ]; then
+    echo \
+        -Os \
+        -Wall \
+        -Wextra \
+        -std=c11 \
+        -pedantic \
+        "-I${SAGE_HOME}" \
+        "-I${SUNDER_HOME}/lib/raylib" \
+        $("${SUNDER_HOME}/lib/raylib/raylib-config" desktop)
+elif [ "${BACKEND}" = 'web' ]; then
+    echo \
+        -Os \
+        -Wall \
+        -Wextra \
+        -pedantic \
+        "-I${SAGE_HOME}" \
+        --shell-file "${SAGE_HOME}/sage-web-shell.html" \
+        -s SINGLE_FILE=1 \
+        -s WASM=1 \
+        -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","HEAPU8"]' \
+        -s ALLOW_MEMORY_GROWTH=1 \
+        -s INITIAL_MEMORY=16MB \
+        -s STACK_SIZE=1MB \
+        -s ASSERTIONS=1
+else
+    echo "error: unknown backend ${BACKEND}"
+    exit 1
+fi

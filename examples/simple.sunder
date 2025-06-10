@@ -1,0 +1,92 @@
+import "c";
+import "std";
+
+import "sage.sunder";
+
+let SCREEN_W: sint = 800;
+let SCREEN_H: sint = 600;
+let SPRITE_SIZE: sint = 64;
+
+var framebuffer_pixels: [(:usize)(SCREEN_W * SCREEN_H)]sage::pixel = uninit;
+var framebuffer = (:sage::image){
+    .w = SCREEN_W,
+    .h = SCREEN_H,
+    .pixels = &framebuffer_pixels[0],
+};
+var sprite_pixels: [(:usize)(SPRITE_SIZE * SPRITE_SIZE)]sage::pixel = uninit;
+var sprite = (:sage::image){
+    .w = SPRITE_SIZE,
+    .h = SPRITE_SIZE,
+    .pixels = &sprite_pixels[0],
+};
+
+var frame = 0u;
+var position_x = (:sint)0;
+var position_y = SCREEN_H / 2 - SPRITE_SIZE / 2;
+var velocity_x = (:sint)+2; # pixels per tick
+var velocity_y = (:sint)-2; # pixels per tick
+
+func tick() void {
+    var t0 = sage::now();
+
+    # Clear framebuffer
+    std::slice[[sage::pixel]]::fill(framebuffer.pixels_slice(), sage::BLACK);
+
+    # Pixel rain
+    for i in (:usize)(SCREEN_W * SCREEN_H) {
+        var x = (frame +% i * 7) % (:usize)SCREEN_W;
+        var y = (frame +% i * 11) % (:usize)SCREEN_H;
+        var color = sage::rgb(
+            (:u8)((frame % 0xff) +% 0x00 +% (i * 2)),
+            (:u8)((frame % 0xff) +% 0xff -% (i * 2)),
+            (:u8)(frame % 0xff));
+        sage::set_pixel(framebuffer, (:sint)x, (:sint)y, color);
+    }
+
+    # Bouncing square sprite
+    position_x += velocity_x;
+    position_y += velocity_y;
+    if (position_x <= 0 or position_x >= SCREEN_W - SPRITE_SIZE) {
+        velocity_x *= -1;
+    }
+    if (position_y <= 0 or position_y >= SCREEN_H - SPRITE_SIZE) {
+        velocity_y *= -1;
+    }
+    for y: sint in SPRITE_SIZE {
+        for x: sint in SPRITE_SIZE {
+            var r = (:u8)(x *% (0xff / SPRITE_SIZE));
+            var g = (:u8)(y *% (0xff / SPRITE_SIZE));
+            var b = 0x80u8;
+            var a = 0xA0u8;
+            var color = sage::rgba(r, g, b, a);
+            sage::set_pixel(sprite, x, y, color);
+        }
+    }
+    sage::blend(framebuffer, position_x, position_y, sprite);
+
+    # Border
+    for x: sint in SCREEN_W {
+        sage::set_pixel(framebuffer, x, 0, sage::WHITE);
+        sage::set_pixel(framebuffer, x, SCREEN_H - 1, sage::WHITE);
+    }
+    for y: sint in SCREEN_H {
+        sage::set_pixel(framebuffer, 0, y, sage::WHITE);
+        sage::set_pixel(framebuffer, SCREEN_W - 1, y, sage::WHITE);
+    }
+
+    # End of frame
+    sage::present();
+    frame += 1;
+
+    var t1 = sage::now();
+    std::print_format_line(
+        std::out(), "frame time: {.6} seconds",
+        (:[]std::formatter)[
+            std::formatter::init[[f64]](&(t1 - t0))]);
+}
+
+func main() void {
+    sage::init(framebuffer);
+    defer sage::fini();
+    sage::run(tick);
+}

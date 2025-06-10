@@ -1,0 +1,49 @@
+namespace sage;
+import "c";
+
+struct pixel {
+    var r: uint8_t;
+    var g: uint8_t;
+    var b: uint8_t;
+    var a: uint8_t;
+}
+
+struct image {
+    var w: sint;
+    var h: sint;
+    var pixels: *pixel;
+
+    func pixels_slice(self: *image) []pixel {
+        return (:[]pixel){self.*.pixels, self.*.pixels_count()};
+    }
+
+    func pixels_count(self: *image) usize {
+        return (:usize)(self.*.w * self.*.h);
+    }
+}
+
+extern func set_pixel(img: image, x: sint, y: sint, color: pixel) void;
+extern func get_pixel(img: image, x: sint, y: sint) pixel;
+
+extern func blit(dst: image, dx: sint, dy: sint, src: image) void;
+extern func blend(dst: image, dx: sint, dy: sint, src: image) void;
+
+extern func init(framebuffer: image) void;
+extern func fini() void;
+
+extern func run(tick: func() void) void;
+
+extern func now() double;
+
+extern func present() void;
+
+func rgba(r: u8, g: u8, b: u8, a: u8) pixel {
+    return (:pixel){.r = r, .g = g, .b = b, .a = a};
+}
+
+func rgb(r: u8, g: u8, b: u8) pixel {
+    return (:pixel){.r = r, .g = g, .b = b, .a = 0xff};
+}
+
+let BLACK = (:pixel){.r = 0x00, .g = 0x00, .b = 0x00, .a = 0xff};
+let WHITE = (:pixel){.r = 0xff, .g = 0xff, .b = 0xff, .a = 0xff};

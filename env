@@ -1,0 +1,20 @@
+#!/bin/sh
+if [ -z "${SAGE_HOME}" ]; then
+    SAGE_HOME="$(pwd)"
+fi
+
+export SUNDER_HOME="${SAGE_HOME}/.sunder"
+if [ -e "${SUNDER_HOME}/env" ]; then
+    . "${SUNDER_HOME}/env"
+else
+    echo "error: sunder not installed"
+    exit 1
+fi
+
+if [ -e "${SAGE_HOME}/.vendor/emsdk/emsdk_env.sh" ]; then
+    export EMSDK_QUIET=1
+    . "${SAGE_HOME}/.vendor/emsdk//emsdk_env.sh"
+else
+    echo "error: emsdk not installed"
+    exit 1
+fi
