@@ -13,22 +13,27 @@ OUTPUT="${SOURCE}.${BACKEND}"
 if [ -z "${SAGE_HOME}" ]; then
     SAGE_HOME="$(pwd)"
 fi
+if [ -z "${CFLAGS}" ]; then
+    CFLAGS="-std=c11 -Wall -Wextra -Wpedantic"
+fi
 
 if [ "${SUFFIX}" = 'c' -a "${BACKEND}" = 'raylib' ]; then
-    cc -o "${OUTPUT}.out" "${SAGE_HOME}/sage-${BACKEND}.c" "${SOURCE}" \
+    cc ${CFLAGS} -o "${OUTPUT}.out" \
+        "${SAGE_HOME}/sage-${BACKEND}.c" "${SOURCE}" \
         $("${SAGE_HOME}/sage-config" "${BACKEND}")
 elif [ "${SUFFIX}" = 'c' -a "${BACKEND}" = 'web' ]; then
-    emcc -o "${OUTPUT}.html" "${SAGE_HOME}/sage-${BACKEND}.c" "${SOURCE}" \
+    emcc ${CFLAGS} -o "${OUTPUT}.html" \
+        "${SAGE_HOME}/sage-${BACKEND}.c" "${SOURCE}" \
         $("${SAGE_HOME}/sage-config" "${BACKEND}")
 elif [ "${SUFFIX}" = 'sunder' -a "${BACKEND}" = 'raylib' ]; then
-    SUNDER_CFLAGS="$(${SAGE_HOME}/sage-config ${BACKEND})" \
+    SUNDER_CFLAGS="${CFLAGS} $(${SAGE_HOME}/sage-config ${BACKEND})" \
     SUNDER_SEARCH_PATH="${SUNDER_SEARCH_PATH}:${SAGE_HOME}" \
     sunder-compile -o "${OUTPUT}.out" "sage-${BACKEND}.c" "${SOURCE}"
 elif [ "${SUFFIX}" = 'sunder' -a "${BACKEND}" = 'web' ]; then
     SUNDER_CC=emcc \
     SUNDER_ARCH=wasm32 \
     SUNDER_HOST=emscripten \
-    SUNDER_CFLAGS="$(${SAGE_HOME}/sage-config ${BACKEND})" \
+    SUNDER_CFLAGS="${CFLAGS} $(${SAGE_HOME}/sage-config ${BACKEND})" \
     SUNDER_SEARCH_PATH="${SUNDER_SEARCH_PATH}:${SAGE_HOME}" \
     sunder-compile -o "${OUTPUT}.html" "sage-${BACKEND}.c" "${SOURCE}"
 else
