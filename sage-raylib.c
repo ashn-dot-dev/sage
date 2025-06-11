@@ -1,5 +1,6 @@
+#define _POSIX_C_SOURCE 199309L /* clock_gettime */
 #include <stdbool.h>
-#include <time.h>
+#include <time.h> /* clock_gettime */
 
 #include <raylib.h>
 

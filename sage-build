@@ -15,11 +15,11 @@ if [ -z "${SAGE_HOME}" ]; then
 fi
 
 if [ "${SUFFIX}" = 'c' -a "${BACKEND}" = 'raylib' ]; then
-    cc $("${SAGE_HOME}/sage-config" "${BACKEND}") -o "${OUTPUT}.out" \
-        "${SAGE_HOME}/sage-${BACKEND}.c" "${SOURCE}"
+    cc -o "${OUTPUT}.out" "${SAGE_HOME}/sage-${BACKEND}.c" "${SOURCE}" \
+        $("${SAGE_HOME}/sage-config" "${BACKEND}")
 elif [ "${SUFFIX}" = 'c' -a "${BACKEND}" = 'web' ]; then
-    emcc $("${SAGE_HOME}/sage-config" "${BACKEND}") -o "${OUTPUT}.html" \
-        "${SAGE_HOME}/sage-${BACKEND}.c" "${SOURCE}"
+    emcc -o "${OUTPUT}.html" "${SAGE_HOME}/sage-${BACKEND}.c" "${SOURCE}" \
+        $("${SAGE_HOME}/sage-config" "${BACKEND}")
 elif [ "${SUFFIX}" = 'sunder' -a "${BACKEND}" = 'raylib' ]; then
     SUNDER_CFLAGS="$(${SAGE_HOME}/sage-config ${BACKEND})" \
     SUNDER_SEARCH_PATH="${SUNDER_SEARCH_PATH}:${SAGE_HOME}" \

@@ -6,12 +6,12 @@
 	format
 
 examples:
-	time sh sage-build raylib examples/readme.c
-	time sh sage-build raylib examples/simple.c
-	time sh sage-build raylib examples/simple.sunder
-	time sh sage-build web examples/readme.c
-	time sh sage-build web examples/simple.c
-	time sh sage-build web examples/simple.sunder
+	sh sage-build raylib examples/readme.c
+	sh sage-build raylib examples/simple.c
+	sh sage-build raylib examples/simple.sunder
+	sh sage-build web examples/readme.c
+	sh sage-build web examples/simple.c
+	sh sage-build web examples/simple.sunder
 
 clean:
 	rm -f examples/*.out
