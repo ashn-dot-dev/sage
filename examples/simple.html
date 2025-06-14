@@ -1,0 +1,86 @@
+<!-- examples/readme.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAGE Application</title>
+    <link rel="stylesheet" type="text/css" href="../sage.css">
+</head>
+<body>
+    <script src="../sage.js"></script>
+
+    <canvas id="main" width="800" height="600"></canvas>
+    <script type="text/javascript">
+        const canvas = new SAGE.Canvas("#main");
+
+        const SPRITE_SIZE = 64;
+        const sprite = new SAGE.Image(SPRITE_SIZE, SPRITE_SIZE);
+
+        let frame = 0;
+        let position_x = 0;
+        let position_y = canvas.h / 2 - SPRITE_SIZE / 2;
+        let velocity_x = +2; /* pixels per tick */
+        let velocity_y = -2; /* pixels per tick */
+
+        const tick = () => {
+            const t0 = canvas.now();
+
+            // Clear the framebuffer
+            canvas.fill(SAGE.BLACK);
+
+
+            // Pixel rain
+            for (let i = 0; i < canvas.w * canvas.h; ++i) {
+                const x = (frame + i * 7) % canvas.w;
+                const y = (frame + i * 11) % canvas.h;
+                const color = SAGE.rgba(
+                    Math.floor((frame % 0xff) + 0x00 + (i * 2)),
+                    Math.floor((frame % 0xff) + 0xff - (i * 2)),
+                    Math.floor(frame % 0xff));
+                canvas.setPixel(x, y, color);
+            }
+
+            // Bouncing square sprite
+            position_x += velocity_x;
+            position_y += velocity_y;
+            if (position_x <= 0 || position_x >= canvas.w - SPRITE_SIZE) {
+                velocity_x *= -1;
+            }
+            if (position_y <= 0 || position_y >= canvas.h - SPRITE_SIZE) {
+                velocity_y *= -1;
+            }
+            for (let y = 0; y < SPRITE_SIZE; ++y) {
+                for (let x = 0; x < SPRITE_SIZE; ++x) {
+                    const r = Math.floor(x * (0xff / SPRITE_SIZE));
+                    const g = Math.floor(y * (0xff / SPRITE_SIZE));
+                    const b = 0x80;
+                    const a = 0xA0;
+                    const color = SAGE.rgba(r, g, b, a);
+                    sprite.setPixel(x, y, color);
+                }
+            }
+            canvas.blend(position_x, position_y, sprite);
+
+            // Border
+            for (let x = 0; x < canvas.w; ++x) {
+                canvas.setPixel(x, 0, SAGE.WHITE);
+                canvas.setPixel(x, canvas.h - 1, SAGE.WHITE);
+            }
+            for (let y = 0; y < canvas.h; ++y) {
+                canvas.setPixel(0, y, SAGE.WHITE);
+                canvas.setPixel(canvas.w - 1, y, SAGE.WHITE);
+            }
+
+            // End of frame
+            canvas.present();
+            frame += 1;
+
+            const t1 = canvas.now();
+            console.log(`frame time: ${(t1 - t0).toFixed(6)} seconds`);
+        }
+
+        canvas.run(tick);
+    </script>
+</body>
+</html>
