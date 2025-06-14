@@ -11,9 +11,7 @@ void
 tick(void)
 {
     // Clear the framebuffer.
-    for (int i = 0; i < SCREEN_W * SCREEN_H; ++i) {
-        framebuffer.pixels[i] = SAGE_BLACK;
-    }
+    sage_fill(framebuffer, SAGE_BLACK);
 
     // Write a sparse swirl of dots into the framebuffer.
     for (int y = 0; y < SCREEN_H; ++y) {

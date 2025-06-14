@@ -1,0 +1,41 @@
+<!-- examples/readme.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAGE Application</title>
+    <link rel="stylesheet" type="text/css" href="../sage.css">
+</head>
+<body>
+    <script src="../sage.js"></script>
+
+    <canvas id="main" width="640" height="480"></canvas>
+    <script type="text/javascript">
+        const canvas = new SAGE.Canvas("#main");
+
+        const tick = () => {
+            // Clear the framebuffer.
+            canvas.fill(SAGE.BLACK);
+
+            // Write a sparse swirl of dots into the framebuffer.
+            for (let y = 0; y < canvas.h; ++y) {
+                for (let x = 0; x < canvas.w; ++x) {
+                    const hash = (x * 73 + y * 151 + x * y * 37) % 65536;
+                    if (hash % 777 < 11) {
+                        const r = Math.floor((x / canvas.w) * 0xFF);
+                        const b = Math.floor((y / canvas.h) * 0xFF);
+                        const color = SAGE.rgb(r, 0x00, b);
+                        canvas.setPixel(x, y, color);
+                    }
+                }
+            }
+
+            // Draw the framebuffer onto the screen.
+            canvas.present();
+        }
+
+        canvas.run(tick);
+    </script>
+</body>
+</html>

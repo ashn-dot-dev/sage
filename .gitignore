@@ -2,4 +2,5 @@
 .sunder/
 
 examples/*.out
-examples/*.html
+examples/*.c.*.html
+examples/*.sunder.*.html

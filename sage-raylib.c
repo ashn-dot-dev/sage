@@ -11,7 +11,7 @@ static double
 sage_now_raw(void);
 
 static struct {
-    bool is_init;
+    bool init;
     double init_now;
     struct sage_image framebuffer;
     Texture2D framebuffer_texture;
@@ -20,7 +20,7 @@ static struct {
 void
 sage_init(struct sage_image framebuffer)
 {
-    if (sage_state.is_init) {
+    if (sage_state.init) {
         return;
     }
 
@@ -36,20 +36,20 @@ sage_init(struct sage_image framebuffer)
         .format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8,
     });
 
-    sage_state.is_init = true;
+    sage_state.init = true;
     sage_state.init_now = sage_now_raw();
 }
 
 void
 sage_fini(void)
 {
-    if (!sage_state.is_init) {
+    if (!sage_state.init) {
         return;
     }
 
     UnloadTexture(sage_state.framebuffer_texture);
     CloseWindow();
-    sage_state.is_init = false;
+    sage_state.init = false;
 }
 
 void
@@ -78,7 +78,7 @@ sage_now(void)
 void
 sage_present(void)
 {
-    if (!sage_state.is_init) {
+    if (!sage_state.init) {
         return;
     }
 

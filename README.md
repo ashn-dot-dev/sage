@@ -5,6 +5,13 @@ The Simple Abstract Graphics Environment (SAGE) is a minimal software rendering
 framework designed for educational purposes. The goal of SAGE is to provide a
 straightforward API for drawing pixels onto a screen.
 
+SAGE is provided as a C library with [raylib](https://www.raylib.com/) and web
+backend implementations, a [Sunder](https://github.com/ashn-dot-dev/sunder)
+library binding to the C implementations, and a JavaScript library for native
+web development.
+
+## Example in C
+
 ```c
 /* examples/readme.c */
 #include <sage.h>
@@ -19,9 +26,7 @@ void
 tick(void)
 {
     // Clear the framebuffer.
-    for (int i = 0; i < SCREEN_W * SCREEN_H; ++i) {
-        framebuffer.pixels[i] = SAGE_BLACK;
-    }
+    sage_fill(framebuffer, SAGE_BLACK);
 
     // Write a sparse swirl of dots into the framebuffer.
     for (int y = 0; y < SCREEN_H; ++y) {
@@ -55,7 +60,53 @@ main(void)
 }
 ```
 
-## Building and Running
+## Example in HTML/JavaScript
+
+```html
+<!-- examples/readme.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAGE Application</title>
+    <link rel="stylesheet" type="text/css" href="../sage.css">
+</head>
+<body>
+    <script src="../sage.js"></script>
+
+    <canvas id="main" width="640" height="480"></canvas>
+    <script type="text/javascript">
+        const canvas = new SAGE.Canvas("#main");
+
+        const tick = () => {
+            // Clear the framebuffer.
+            canvas.fill(SAGE.BLACK);
+
+            // Write a sparse swirl of dots into the framebuffer.
+            for (let y = 0; y < canvas.h; ++y) {
+                for (let x = 0; x < canvas.w; ++x) {
+                    const hash = (x * 73 + y * 151 + x * y * 37) % 65536;
+                    if (hash % 777 < 11) {
+                        const r = Math.floor((x / canvas.w) * 0xFF);
+                        const b = Math.floor((y / canvas.h) * 0xFF);
+                        const color = SAGE.rgb(r, 0x00, b);
+                        canvas.setPixel(x, y, color);
+                    }
+                }
+            }
+
+            // Draw the framebuffer onto the screen.
+            canvas.present();
+        }
+
+        canvas.run(tick);
+    </script>
+</body>
+</html>
+```
+
+## Building and Running (C/Sunder)
 Building and running SAGE applications requires the following dependencies:
 
 + C11 compiler ([gcc](https://gcc.gnu.org/) or [clang](https://clang.llvm.org/))
@@ -78,11 +129,13 @@ Build a SAGE application from a C or Sunder source file by running the
 `sage-build` tool as `sage-build <backend> <source-file>`:
 
 ```sh
-# Native build using the raylib backend (outputs examples/readme.c.raylib.out)
-./sage-build raylib examples/readme.c
+# Native build using the raylib backend
+./sage-build raylib examples/readme.c # outputs examples/readme.c.raylib.out
+./sage-build raylib examples/readme.sunder # outputs examples/readme.sunder.raylib.out
 
-# WebAssembly build using the web backend (outputs examples/readme.c.web.html)
-./sage-build web examples/readme.c
+# WebAssembly build using the web backend
+./sage-build web examples/readme.c # outputs examples/readme.c.web.html
+./sage-build web examples/readme.sunder # outputs examples/readme.sunder.web.html
 ```
 
 ## License

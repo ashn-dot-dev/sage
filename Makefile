@@ -15,7 +15,8 @@ examples:
 
 clean:
 	rm -f examples/*.out
-	rm -f examples/*.html
+	rm -f examples/*.c.*.html
+	rm -f examples/*.sunder.*.html
 
 format:
 	clang-format -i *.h *.c examples/*.c

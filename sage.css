@@ -1,0 +1,29 @@
+:root {
+    --color-gray-drk: #303030;
+    --color-gray-mid: #505050;
+    --color-gray-lit: #707070;
+}
+
+body {
+    font-family: sans-serif, monospace;
+    background-color: var(--color-gray-drk);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+
+    margin: 0;
+    padding: 0
+}
+
+canvas {
+    padding: 0;
+    display: block;
+    border: 2px solid var(--color-gray-lit);
+    background-color: #000000;
+
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}

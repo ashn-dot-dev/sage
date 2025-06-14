@@ -21,6 +21,14 @@ sage_get_pixel(struct sage_image img, int x, int y)
 }
 
 void
+sage_fill(struct sage_image dst, struct sage_pixel color)
+{
+    for (int i = 0; i < dst.w * dst.h; ++i) {
+        dst.pixels[i] = color;
+    }
+}
+
+void
 sage_blit(struct sage_image dst, int dx, int dy, struct sage_image src)
 {
     for (int src_y = 0; src_y < src.h; ++src_y) {

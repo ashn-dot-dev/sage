@@ -23,9 +23,7 @@ tick(void)
     double t0 = sage_now();
 
     // Clear framebuffer
-    for (int i = 0; i < SCREEN_W * SCREEN_H; ++i) {
-        framebuffer.pixels[i] = SAGE_BLACK;
-    }
+    sage_fill(framebuffer, SAGE_BLACK);
 
     // Pixel rain
     for (int i = 0; i < SCREEN_W * SCREEN_H; ++i) {

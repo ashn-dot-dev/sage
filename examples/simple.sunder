@@ -30,7 +30,7 @@ func tick() void {
     var t0 = sage::now();
 
     # Clear framebuffer
-    std::slice[[sage::pixel]]::fill(framebuffer.pixels_slice(), sage::BLACK);
+    sage::fill(framebuffer, sage::BLACK);
 
     # Pixel rain
     for i in (:usize)(SCREEN_W * SCREEN_H) {

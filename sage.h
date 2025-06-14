@@ -22,6 +22,8 @@ struct sage_pixel
 sage_get_pixel(struct sage_image img, int x, int y);
 
 void
+sage_fill(struct sage_image dst, struct sage_pixel color);
+void
 sage_blit(struct sage_image dst, int dx, int dy, struct sage_image src);
 void
 sage_blend(struct sage_image dst, int dx, int dy, struct sage_image src);

@@ -25,6 +25,7 @@ struct image {
 extern func set_pixel(img: image, x: sint, y: sint, color: pixel) void;
 extern func get_pixel(img: image, x: sint, y: sint) pixel;
 
+extern func fill(dst: image, color: pixel) void;
 extern func blit(dst: image, dx: sint, dy: sint, src: image) void;
 extern func blend(dst: image, dx: sint, dy: sint, src: image) void;
 
