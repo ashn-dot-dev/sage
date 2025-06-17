@@ -16,6 +16,9 @@ fi
 if [ -z "${CFLAGS}" ]; then
     CFLAGS="-std=c11 -Wall -Wextra -Wpedantic"
 fi
+if [ -z "${SUNDER_FLAGS}" ]; then
+    SUNDER_FLAGS=""
+fi
 
 if [ "${SUFFIX}" = 'c' -a "${BACKEND}" = 'raylib' ]; then
     cc ${CFLAGS} -o "${OUTPUT}.out" \
@@ -28,14 +31,16 @@ elif [ "${SUFFIX}" = 'c' -a "${BACKEND}" = 'web' ]; then
 elif [ "${SUFFIX}" = 'sunder' -a "${BACKEND}" = 'raylib' ]; then
     SUNDER_CFLAGS="${CFLAGS} $(${SAGE_HOME}/sage-config ${BACKEND})" \
     SUNDER_SEARCH_PATH="${SUNDER_SEARCH_PATH}:${SAGE_HOME}" \
-    sunder-compile -o "${OUTPUT}.out" "sage-${BACKEND}.c" "${SOURCE}"
+    sunder-compile ${SUNDER_FLAGS} -o "${OUTPUT}.out" \
+        "sage-${BACKEND}.c" "${SOURCE}"
 elif [ "${SUFFIX}" = 'sunder' -a "${BACKEND}" = 'web' ]; then
     SUNDER_CC=emcc \
     SUNDER_ARCH=wasm32 \
     SUNDER_HOST=emscripten \
     SUNDER_CFLAGS="${CFLAGS} $(${SAGE_HOME}/sage-config ${BACKEND})" \
     SUNDER_SEARCH_PATH="${SUNDER_SEARCH_PATH}:${SAGE_HOME}" \
-    sunder-compile -o "${OUTPUT}.html" "sage-${BACKEND}.c" "${SOURCE}"
+    sunder-compile ${SUNDER_FLAGS} -o "${OUTPUT}.html" \
+        "sage-${BACKEND}.c" "${SOURCE}"
 else
     echo 'error: unknown configuration'
     exit 1

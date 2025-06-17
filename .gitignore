@@ -4,3 +4,5 @@
 examples/*.out
 examples/*.c.*.html
 examples/*.sunder.*.html
+
+*.tmp.*
