@@ -130,12 +130,12 @@ Build a SAGE application from a C or Sunder source file by running the
 
 ```sh
 # Native build using the raylib backend
-./sage-build raylib examples/readme.c # outputs examples/readme.c.raylib.out
-./sage-build raylib examples/readme.sunder # outputs examples/readme.sunder.raylib.out
+./sage-build raylib examples/simple.c # outputs examples/simple.c.raylib.out
+./sage-build raylib examples/simple.sunder # outputs examples/simple.sunder.raylib.out
 
 # WebAssembly build using the web backend
-./sage-build web examples/readme.c # outputs examples/readme.c.web.html
-./sage-build web examples/readme.sunder # outputs examples/readme.sunder.web.html
+./sage-build web examples/simple.c # outputs examples/simple.c.web.html
+./sage-build web examples/simple.sunder # outputs examples/simple.sunder.web.html
 ```
 
 ## License
